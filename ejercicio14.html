@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ejercicio 14 - Calculadora de MMM</title>
+</head>
+<body>
+    <h1>Calculadora</h1>
+    <p>Ingrese números separados por comas para calcular el numero mayor, menor y el promedio.</p>
+    <form id="formulario">
+    <label for="numeros" >Ingrese números separados por comas:</label>
+    <input type="text" id="numeros" name="numeros" required>
+    <button type="submit">Calcular</button>
+    </form>
+
+    <br>
+
+    <textarea id="Mayor" readonly></textarea>
+    <textarea id="Menor" readonly></textarea>
+    <textarea id="Promedio" readonly></textarea>
+
+    <script>
+        const formulario = document.getElementById('formulario');
+        const mayorResultado = document.getElementById('Mayor');
+        const menorResultado = document.getElementById('Menor');
+        const promedioResultado = document.getElementById('Promedio');
+
+        formulario.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const numeros = document.getElementById('numeros').value.split(',').map(Number);
+            const mayor = Math.max(...numeros);
+            const menor = Math.min(...numeros);
+            const promedio = numeros.reduce((acc, valor) => acc + valor, 0) / numeros.length;
+
+            mayorResultado.value = `El número mayor es: ${mayor}`;
+            menorResultado.value = `El número menor es: ${menor}`;
+            promedioResultado.value = `El promedio es: ${promedio.toFixed(2)}`;
+        });
+    </script>
+    <button type="button" onclick="window.location.href='index.html';">Volver al index</button>
+</body>
+</html>
