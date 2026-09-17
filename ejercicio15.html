@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/ejercicio15.css">
+        <title>Ejercicio 15</title>
+    </head>
+    <body>
+        <h1>Registro de estudiantes</h1>
+        <p>Agrega estudiantes y sus calificaciones para calcular los resultados.</p>
+
+        <form id="formulario-estudiante">
+            <label for="nombre">Nombre del estudiante:</label>
+            <input type="text" id="nombre" name="nombre" autocomplete="off">
+
+            <label for="calificacion">Calificación:</label>
+            <input type="number" id="calificacion" name="calificacion" step="any">
+
+            <button type="submit">Agregar estudiante</button>
+        </form>
+
+        <p id="mensaje" class="mensaje" role="alert"></p>
+
+        <h2>Estudiantes agregados</h2>
+        <ul id="lista-estudiantes"></ul>
+        <button type="button" id="calcular">Calcular</button>
+
+        <section class="resultados" aria-label="Resultados">
+            <label for="promedio">Calificación promedio:</label>
+            <input type="text" id="promedio" readonly>
+
+            <label for="mayor">Estudiante con la calificación más alta:</label>
+            <input type="text" id="mayor" readonly>
+
+            <label for="menor">Estudiante con la calificación más baja:</label>
+            <input type="text" id="menor" readonly>
+        </section>
+
+        <p><a href="index.html">Volver al índice</a></p>
+
+        <script>
+            const estudiantes = [];
+            const formulario = document.getElementById('formulario-estudiante');
+            const nombre = document.getElementById('nombre');
+            const calificacion = document.getElementById('calificacion');
+            const lista = document.getElementById('lista-estudiantes');
+            const mensaje = document.getElementById('mensaje');
+
+            formulario.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const nombreEstudiante = nombre.value.trim();
+                const valorCalificacion = calificacion.value.trim();
+                const calificacionEstudiante = Number(valorCalificacion);
+
+                if (!nombreEstudiante || !valorCalificacion) {
+                    mensaje.textContent = 'Completa el nombre y la calificación.';
+                    return;
+                }
+
+                if (!Number.isFinite(calificacionEstudiante)) {
+                    mensaje.textContent = 'La calificación debe ser un número válido.';
+                    return;
+                }
+
+                estudiantes.push({
+                    nombre: nombreEstudiante,
+                    calificacion: calificacionEstudiante
+                });
+
+                const estudianteEnLista = document.createElement('li');
+                estudianteEnLista.textContent = `${nombreEstudiante}: ${calificacionEstudiante}`;
+                lista.appendChild(estudianteEnLista);
+                mensaje.textContent = 'Estudiante agregado correctamente.';
+                formulario.reset();
+                nombre.focus();
+            });
+
+            document.getElementById('calcular').addEventListener('click', function() {
+                if (estudiantes.length === 0) {
+                    mensaje.textContent = 'Agrega al menos un estudiante antes de calcular.';
+                    return;
+                }
+
+                const promedio = estudiantes.reduce((total, estudiante) => {
+                    return total + estudiante.calificacion;
+                }, 0) / estudiantes.length;
+                const calificaciones = estudiantes.map(estudiante => estudiante.calificacion);
+                const calificacionMaxima = Math.max(...calificaciones);
+                const calificacionMinima = Math.min(...calificaciones);
+                const estudianteMayor = estudiantes.find(estudiante => estudiante.calificacion === calificacionMaxima);
+                const estudianteMenor = estudiantes.find(estudiante => estudiante.calificacion === calificacionMinima);
+
+                document.getElementById('promedio').value = promedio.toFixed(2);
+                document.getElementById('mayor').value = estudianteMayor.nombre;
+                document.getElementById('menor').value = estudianteMenor.nombre;
+                mensaje.textContent = 'Resultados calculados.';
+            });
+        </script>
+    </body>
+</html>

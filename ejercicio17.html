@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/ejercicio17.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <title>Ejercicio 17 - Gestión de tareas</title>
+    </head>
+    <body>
+        <main class="gestor-tareas">
+            <h1>Gestión de tareas pendientes</h1>
+            <p>Agrega tareas y consérvalas aunque cierres el navegador.</p>
+
+            <form id="formulario-tarea">
+                <label for="tarea">Nueva tarea:</label>
+                <div class="entrada-tarea">
+                    <input type="text" id="tarea" name="tarea" autocomplete="off" maxlength="120">
+                    <button type="submit">Agregar tarea</button>
+                </div>
+            </form>
+
+            <section aria-labelledby="titulo-lista">
+                <h2 id="titulo-lista">Tareas pendientes</h2>
+                <p id="lista-vacia" class="lista-vacia">No hay tareas pendientes.</p>
+                <ul id="lista-tareas"></ul>
+            </section>
+
+            <p><a href="index.html">Volver al índice</a></p>
+        </main>
+
+        <script>
+            const manejarTareas = () => {
+                let tareas = [];
+                const claveStorage = 'ejercicio17_tareas';
+
+                const guardarTareas = () => {
+                    localStorage.setItem(claveStorage, JSON.stringify(tareas));
+                };
+
+                const cargarTareas = () => {
+                    const tareasGuardadas = localStorage.getItem(claveStorage);
+
+                    if (!tareasGuardadas) {
+                        return;
+                    }
+
+                    try {
+                        const tareasParseadas = JSON.parse(tareasGuardadas);
+                        tareas = Array.isArray(tareasParseadas) ? tareasParseadas : [];
+                    } catch (error) {
+                        tareas = [];
+                        localStorage.removeItem(claveStorage);
+                    }
+                };
+
+                const agregarTarea = texto => {
+                    tareas.push({
+                        id: crypto.randomUUID(),
+                        texto,
+                        completada: false
+                    });
+                    guardarTareas();
+                };
+
+                const eliminarTarea = id => {
+                    tareas = tareas.filter(tarea => tarea.id !== id);
+                    guardarTareas();
+                };
+
+                const obtenerTareas = () => [...tareas];
+
+                cargarTareas();
+
+                return { agregarTarea, eliminarTarea, obtenerTareas };
+            };
+
+            const gestor = manejarTareas();
+            const formulario = document.getElementById('formulario-tarea');
+            const entradaTarea = document.getElementById('tarea');
+            const listaTareas = document.getElementById('lista-tareas');
+            const listaVacia = document.getElementById('lista-vacia');
+
+            const mostrarError = mensaje => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Tarea no válida',
+                    text: mensaje,
+                    confirmButtonText: 'Aceptar'
+                });
+            };
+
+            const confirmarEliminacion = id => {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¿Eliminar tarea?',
+                    text: 'Esta acción no se puede deshacer.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then(({ isConfirmed }) => {
+                    if (isConfirmed) {
+                        gestor.eliminarTarea(id);
+                        renderizarTareas();
+                    }
+                });
+            };
+
+            const renderizarTareas = () => {
+                const tareas = gestor.obtenerTareas();
+                listaTareas.replaceChildren();
+                listaVacia.hidden = tareas.length > 0;
+
+                tareas.forEach(tarea => {
+                    const elemento = document.createElement('li');
+                    elemento.className = 'tarea';
+
+                    const texto = document.createElement('span');
+                    texto.textContent = tarea.texto;
+
+                    const botonEliminar = document.createElement('button');
+                    botonEliminar.type = 'button';
+                    botonEliminar.textContent = 'Eliminar';
+                    botonEliminar.addEventListener('click', () => confirmarEliminacion(tarea.id));
+
+                    elemento.append(texto, botonEliminar);
+                    listaTareas.appendChild(elemento);
+                });
+            };
+
+            formulario.addEventListener('submit', event => {
+                event.preventDefault();
+                const texto = entradaTarea.value.trim();
+
+                if (!texto) {
+                    mostrarError('Escribe una tarea antes de agregarla.');
+                    return;
+                }
+
+                gestor.agregarTarea(texto);
+                entradaTarea.value = '';
+                renderizarTareas();
+                entradaTarea.focus();
+            });
+
+            renderizarTareas();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,40 @@
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 700px;
+                margin: 2rem auto;
+                padding: 0 1rem;
+                color: #222;
+            }
+
+            form, .resultados {
+                display: grid;
+                gap: 0.75rem;
+                margin-top: 1.5rem;
+            }
+
+            label {
+                font-weight: bold;
+            }
+
+            input, button {
+                box-sizing: border-box;
+                font: inherit;
+                padding: 0.6rem;
+            }
+
+            button {
+                cursor: pointer;
+            }
+
+            #lista-estudiantes {
+                padding-left: 1.5rem;
+            }
+
+            .mensaje {
+                min-height: 1.25rem;
+                color: #a12626;
+            }
+
+            .resultados input {
+                background-color: #f1f1f1;
+            }

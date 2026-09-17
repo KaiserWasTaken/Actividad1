@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    color: #222;
+    background-color: #fff !important;
+}
+
+.container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem !important;
+}
+
+.app-panel {
+    max-width: none;
+    padding: 0 !important;
+    background-color: transparent !important;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none !important;
+}
+
+form {
+    margin-top: 1.5rem;
+}
+
+input,
+button {
+    box-sizing: border-box;
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+#lista .list-group-item {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 575.98px) {
+    .container {
+        margin-top: 1.5rem;
+    }
+}

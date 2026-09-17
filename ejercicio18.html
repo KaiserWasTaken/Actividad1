@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/ejercicio18.css">
+        <title>Ejercicio Guiado 18 - Manipulación del DOM</title>
+    </head>
+    <body class="bg-light">
+        <main class="container py-4 py-md-5">
+            <section class="app-panel mx-auto p-4 p-md-5 bg-white shadow-sm">
+                <header class="mb-4">
+                    <span class="badge text-bg-primary mb-2">Ejercicio Guiado 18</span>
+                    <h1 class="display-6 fw-bold">Agregar y eliminar elementos</h1>
+                    <p class="text-secondary mb-0">Crea una lista dinámica utilizando manipulación del DOM.</p>
+                </header>
+
+                <form id="formulario-elemento" class="row g-2 mb-4">
+                    <div class="col-12 col-md">
+                        <label for="nuevoElemento" class="visually-hidden">Nuevo elemento</label>
+                        <input type="text" id="nuevoElemento" class="form-control form-control-lg" placeholder="Escribe algo para agregar" autocomplete="off" maxlength="120">
+                    </div>
+                    <div class="col-12 col-md-auto">
+                        <button type="submit" id="agregarBtn" class="btn btn-primary btn-lg w-100">Agregar</button>
+                    </div>
+                </form>
+
+                <div id="mensaje" class="alert alert-warning d-none" role="alert"></div>
+
+                <section aria-labelledby="titulo-lista">
+                    <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+                        <h2 id="titulo-lista" class="h4 mb-0">Elementos agregados</h2>
+                        <span id="contador" class="badge rounded-pill text-bg-secondary">0 elementos</span>
+                    </div>
+                    <p id="lista-vacia" class="text-secondary text-center border rounded p-4 mb-0">Todavía no hay elementos en la lista.</p>
+                    <ul id="lista" class="list-group"></ul>
+                </section>
+
+                <p class="mt-4 mb-0"><a href="index.html" class="link-primary">Volver al índice</a></p>
+            </section>
+        </main>
+
+        <script>
+            const formulario = document.getElementById('formulario-elemento');
+            const input = document.getElementById('nuevoElemento');
+            const lista = document.getElementById('lista');
+            const listaVacia = document.getElementById('lista-vacia');
+            const contador = document.getElementById('contador');
+            const mensaje = document.getElementById('mensaje');
+
+            const mostrarMensaje = texto => {
+                mensaje.textContent = texto;
+                mensaje.classList.remove('d-none');
+            };
+
+            const actualizarEstado = () => {
+                const cantidad = lista.children.length;
+                listaVacia.classList.toggle('d-none', cantidad > 0);
+                contador.textContent = `${cantidad} ${cantidad === 1 ? 'elemento' : 'elementos'}`;
+            };
+
+            const eliminarElemento = elemento => {
+                elemento.remove();
+                actualizarEstado();
+            };
+
+            const agregarElemento = () => {
+                const texto = input.value.trim();
+
+                if (texto === '') {
+                    mostrarMensaje('Escribe algo para agregar a la lista.');
+                    input.focus();
+                    return;
+                }
+
+                const elemento = document.createElement('li');
+                elemento.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center', 'gap-3');
+
+                const textoNodo = document.createElement('span');
+                textoNodo.textContent = texto;
+
+                const botonEliminar = document.createElement('button');
+                botonEliminar.type = 'button';
+                botonEliminar.classList.add('btn', 'btn-outline-danger', 'btn-sm', 'flex-shrink-0');
+                botonEliminar.textContent = 'Eliminar';
+                botonEliminar.addEventListener('click', () => eliminarElemento(elemento));
+
+                elemento.appendChild(textoNodo);
+                elemento.appendChild(botonEliminar);
+                lista.appendChild(elemento);
+                input.value = '';
+                mensaje.classList.add('d-none');
+                actualizarEstado();
+                input.focus();
+            };
+
+            formulario.addEventListener('submit', event => {
+                event.preventDefault();
+                agregarElemento();
+            });
+
+            actualizarEstado();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/ejercicio16.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <title>Ejercicio 16 - Calculadora</title>
+    </head>
+    <body>
+        <main class="calculadora">
+            <h1>Calculadora de números</h1>
+            <p>Ingresa dos números y selecciona una operación básica.</p>
+
+            <form id="formulario-calculadora">
+                <label for="numero1">Primer número:</label>
+                <input type="text" id="numero1" name="numero1" inputmode="decimal" autocomplete="off">
+
+                <label for="numero2">Segundo número:</label>
+                <input type="text" id="numero2" name="numero2" inputmode="decimal" autocomplete="off">
+
+                <div class="operaciones" aria-label="Operaciones">
+                    <button type="button" data-operacion="suma">Sumar</button>
+                    <button type="button" data-operacion="resta">Restar</button>
+                    <button type="button" data-operacion="multiplicacion">Multiplicar</button>
+                    <button type="button" data-operacion="division">Dividir</button>
+                </div>
+
+                <label for="resultado">Resultado:</label>
+                <input type="text" id="resultado" name="resultado" readonly>
+            </form>
+
+            <p><a href="index.html">Volver al índice</a></p>
+        </main>
+
+        <script>
+            const sumar = (a, b) => a + b;
+            const restar = (a, b) => a - b;
+            const multiplicar = (a, b) => a * b;
+            const dividir = (a, b) => b !== 0 ? a / b : null;
+
+            const formulario = document.getElementById('formulario-calculadora');
+            const numero1 = document.getElementById('numero1');
+            const numero2 = document.getElementById('numero2');
+            const resultado = document.getElementById('resultado');
+
+            const mostrarError = mensaje => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Datos no válidos',
+                    text: mensaje,
+                    confirmButtonText: 'Aceptar'
+                });
+            };
+
+            const calcularOperacion = operacion => {
+                const valor1 = numero1.value.trim();
+                const valor2 = numero2.value.trim();
+                const a = Number(valor1);
+                const b = Number(valor2);
+
+                if (!valor1 || !valor2 || !Number.isFinite(a) || !Number.isFinite(b)) {
+                    mostrarError('Ingresa dos números válidos antes de realizar la operación.');
+                    return;
+                }
+
+                let valorResultado;
+
+                switch (operacion) {
+                    case 'suma':
+                        valorResultado = sumar(a, b);
+                        break;
+                    case 'resta':
+                        valorResultado = restar(a, b);
+                        break;
+                    case 'multiplicacion':
+                        valorResultado = multiplicar(a, b);
+                        break;
+                    case 'division':
+                        if (b === 0) {
+                            mostrarError('No es posible dividir entre cero.');
+                            return;
+                        }
+                        valorResultado = dividir(a, b);
+                        break;
+                    default:
+                        return;
+                }
+
+                resultado.value = valorResultado;
+            };
+
+            formulario.addEventListener('submit', event => event.preventDefault());
+            document.querySelectorAll('[data-operacion]').forEach(boton => {
+                boton.addEventListener('click', () => calcularOperacion(boton.dataset.operacion));
+            });
+        </script>
+    </body>
+</html>
